@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyección Plan para el Retiro</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+      background-color: #f5f7fa;
+      background-repeat: repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      color: #2b2d42;
+      margin-top: 5px;
+      font-size: 6vw;
+      text-align: center;
+    }
+    h1::before {
+      content: "\1F4CA ";
+    }
+    .logo {
+      max-width: 90%;
+      height: auto;
+      margin: 0 auto 10px auto;
+      display: block;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 900px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 100%;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    button, .btn-link {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      flex: 1 1 45%;
+      min-width: 140px;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .btn-proyectar { background-color: #38b000; color: white; }
+    .btn-proyectar:hover { background-color: #2d8700; }
+    .btn-limpiar { background-color: #d00000; color: white; }
+    .btn-limpiar:hover { background-color: #a00000; }
+    .btn-pdf { background-color: #0077b6; color: white; }
+    .btn-pdf:hover { background-color: #005f91; }
+    .btn-whatsapp { background-color: #25D366; color: white; }
+    .btn-whatsapp:hover { background-color: #1ba64c; }
+    table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+  background-color: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  display: block;
+  table-layout: fixed;
+}
+    th, td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 14px;
+  word-wrap: break-word;
+  width: 25%;
+}
+    th {
+      background-color: #edf2f4;
+      font-weight: bold;
+    }
+    .nota {
+      font-size: 12px;
+      font-style: italic;
+      margin-top: 10px;
+      color: #555;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .button-group button,
+      .btn-link {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Proyección Plan para el Retiro</h1>
+  <p style="font-size: 13px; color: #333; margin-top: 4px; text-align: center; max-width: 600px;">
+    Esta proyección se basa en inversiones en el índice S&P 500, una de las opciones más sólidas y rentables a largo plazo. Históricamente ha ofrecido excelentes rendimientos con riesgo diversificado. Ideal para construir un patrimonio de retiro sólido y confiable.
+  </p>
+  <div class="container">
+    <div class="form-group">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre">
+    </div>
+    <div class="form-group">
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad">
+    </div>
+    <div class="form-group">
+      <label for="aporte">Cantidad que desea aportar mensualmente:</label>
+      <input type="number" id="aporte">
+    </div>
+    <div class="form-group">
+      <label for="anios">Años que desea aportar:</label>
+      <select id="anios">
+        <option value="5">5 años</option>
+        <option value="10">10 años</option>
+        <option value="15">15 años</option>
+        <option value="20">20 años</option>
+        <option value="25">25 años</option>
+      </select>
+    </div>
+    <div class="button-group">
+      <button class="btn-proyectar" onclick="proyectar()">📈 Proyectar</button>
+      <button class="btn-limpiar" onclick="limpiar()">🧹 Limpiar datos</button>
+      <button class="btn-pdf" onclick="descargarPDF()">📄 Descargar PDF</button>
+      <a class="btn-link btn-whatsapp" href="https://wa.link/krx52k" target="_blank">💬 Enviar WhatsApp</a>
+    </div>
+    <table id="resultado">
+      <thead>
+        <tr>
+          <th>Año</th>
+          <th>Pago Anual con Inflación</th>
+          <th>Total Acumulado</th>
+          <th>Ahorro Proyectado (12%)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p class="nota">* Esta es una proyección basada en el 12% de rendimiento e inflación del 4% con interés compuesto. Es un proyecto de Tasa Variable.</p>
+  </div>
+<script>
+function formatCurrency(value) {
+  return '$' + value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function proyectar() {
+  const aporteMensual = parseFloat(document.getElementById('aporte').value);
+  const aporteInicial = aporteMensual * 12;
+  const anios = parseInt(document.getElementById('anios').value);
+  const tbody = document.getElementById('resultado').querySelector('tbody');
+  tbody.innerHTML = '';
+  let acumulado = 0;
+  let proyeccion = 0;
+  for (let i = 1; i <= anios; i++) {
+    const inflacion = Math.pow(1.04, i - 1);
+    const aporteAnual = aporteInicial * inflacion;
+    acumulado += aporteAnual;
+    proyeccion = (proyeccion + aporteAnual) * 1.12;
+    const fila = `<tr>
+      <td>${i}</td>
+      <td>${formatCurrency(aporteAnual)}</td>
+      <td>${formatCurrency(acumulado)}</td>
+      <td>${formatCurrency(proyeccion)}</td>
+    </tr>`;
+    tbody.insertAdjacentHTML('beforeend', fila);
+  }
+}
+
+function limpiar() {
+  document.getElementById('nombre').value = '';
+  document.getElementById('edad').value = '';
+  document.getElementById('aporte').value = '';
+  document.getElementById('anios').value = '5';
+  document.getElementById('resultado').querySelector('tbody').innerHTML = '';
+}
+
+async function descargarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  doc.setFontSize(12);
+  doc.text("Proyección Plan para el Retiro", 20, 20);
+  const nombre = document.getElementById('nombre').value;
+  const edad = parseInt(document.getElementById('edad').value);
+  const aporte = parseFloat(document.getElementById('aporte').value);
+  const anios = parseInt(document.getElementById('anios').value);
+  const edadFinal = edad + anios;
+  doc.text(`Nombre: ${nombre}`, 20, 30);
+  doc.text(`Edad: ${edad}`, 20, 36);
+  doc.text(`Edad al final del ahorro: ${edadFinal}`, 20, 42);
+  doc.text(`Aporte mensual: ${formatCurrency(aporte)}`, 20, 48);
+  doc.text(`Años a aportar: ${anios}`, 20, 54);
+  doc.setLineWidth(0.3);
+  doc.line(20, 58, 190, 58);
+  doc.setFontSize(10);
+  doc.text("Esta proyección se basa en el índice S&P 500, una de las opciones más sólidas a largo plazo.", 20, 64, { maxWidth: 170 });
+  const rows = [];
+  const tbody = document.getElementById('resultado').querySelectorAll('tbody tr');
+  tbody.forEach((tr) => {
+    const cells = tr.querySelectorAll('td');
+    const row = Array.from(cells).map(td => td.textContent);
+    rows.push(row);
+  });
+  doc.autoTable({
+    startY: 72,
+    theme: 'striped',
+    styles: { fontSize: 9, halign: 'center', valign: 'middle' },
+    headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245, 245, 245] },
+    head: [['Año', 'Pago Anual con Inflación', 'Total Acumulado', 'Ahorro Proyectado (12%)']],
+    body: rows
+  });
+  const contactoY = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(9);
+  doc.setFont("italic");
+  doc.text("* Proyección con 12% de rendimiento e inflación del 4%.", 20, contactoY);
+  doc.setFont("normal");
+  doc.text("Para dudas contactarme: Armando Zaldivar Franco, Asesor Profesional de Seguros.", 20, contactoY + 6);
+  doc.text("Teléfono: (614) 169-0118", 20, contactoY + 12);
+  doc.save("proyeccion-retiro.pdf");
+}
+</script>
+</body>
+</html>
